@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- A-Frame を読み込む -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <!-- AR.js を読み込む -->
@@ -33,5 +33,27 @@
       <!-- カメラを追加 -->
       <a-entity camera></a-entity>
     </a-scene>
+
+    <script>
+      // フルスクリーン表示をリクエスト
+      function requestFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => {
+            console.log('フルスクリーンリクエスト失敗:', err);
+          });
+        }
+      }
+
+      // ページ読み込み後にフルスクリーンをリクエスト
+      window.addEventListener('load', () => {
+        setTimeout(requestFullscreen, 500);
+      });
+
+      // タッチイベント後にもフルスクリーンをリクエスト（ユーザーインタラクション後）
+      document.addEventListener('touchstart', () => {
+        requestFullscreen();
+      }, { once: true });
+    </script>
   </body>
 </html>
