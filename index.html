@@ -51,8 +51,8 @@
         <!-- 3Dモデルを呼び出す -->
         <a-entity gltf-model="#cake"></a-entity>
 
-        <!-- 音楽を流します -->
-        <a-entity sound="src: #happyBirthdayAudio; autoplay: true; loop: true;"></a-entity>
+        <!-- 音楽はボタン押下時のみ再生 -->
+        <a-entity sound="src: #happyBirthdayAudio; autoplay: false; loop: true;"></a-entity>
       </a-marker>
 
       <!-- カメラを追加 -->
@@ -63,9 +63,16 @@
       const musicButton = document.getElementById('music-button');
       const music = document.getElementById('happyBirthdayAudio');
 
+      if (music) {
+        music.muted = false;
+        music.pause();
+        music.currentTime = 0;
+      }
+
       // 音楽再生ボタン
       musicButton.addEventListener('click', () => {
         if (music) {
+          music.currentTime = 0;
           music.play().catch(() => {
             console.log('ユーザー操作後に再生されます');
           });
