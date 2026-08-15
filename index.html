@@ -20,7 +20,26 @@
       canvas { 
         background: transparent; 
       }
+      #camera-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.35);
+        color: white;
+        font-size: 18px;
+        font-family: sans-serif;
+        z-index: 10;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      #camera-overlay.hidden {
+        opacity: 0;
+      }
     </style>
+    <div id="camera-overlay">カメラを許可してください</div>
 	  
     <!-- A-FrameにAR.jsを紐づけ、VRボタン非表示、深度バッファ追加 -->
     <a-scene embedded arjs="backgroundColor: transparent;" loading-screen="enabled: false;" vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true; alpha: true;">
@@ -45,25 +64,31 @@
     </a-scene>
 
     <script>
-      // フルスクリーン表示をリクエスト
-      function requestFullscreen() {
-        const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch(err => {
-            console.log('フルスクリーンリクエスト失敗:', err);
-          });
+      const overlay = document.getElementById('camera-overlay');
+
+      function hideCameraOverlay() {
+        if (overlay) {
+          overlay.classList.add('hidden');
         }
       }
 
-      // ページ読み込み後にフルスクリーンをリクエスト
-      window.addEventListener('load', () => {
-        setTimeout(requestFullscreen, 500);
-      });
+      // カメラが使えるようになったらすぐオーバーレイを消す
+      navigator.mediaDevices?.getUserMedia?.({ video: true, audio: true })
+        .then(stream => {
+          hideCameraOverlay();
+          stream.getTracks().forEach(track => track.stop());
+        })
+        .catch(() => {
+          // カメラ許可待ちでもそのまま表示
+          setTimeout(() => {
+            hideCameraOverlay();
+          }, 1500);
+        });
 
-      // タッチイベント後にもフルスクリーンをリクエスト（ユーザーインタラクション後）
-      document.addEventListener('touchstart', () => {
-        requestFullscreen();
-      }, { once: true });
+      // AR.js が開始したらオーバーレイを消す
+      window.addEventListener('arjs-video-loaded', () => {
+        hideCameraOverlay();
+      });
     </script>
   </body>
 </html>
