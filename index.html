@@ -18,6 +18,7 @@
       <!-- 3DCGモデルを読み込む -->
       <a-assets>
         <a-asset-item id="cake" src="./asset/cake.glb"></a-asset-item>
+        <audio id="happyBirthdayAudio" src="./asset/HappyBirthday.wav"></audio>
       </a-assets>
 
       <!-- マーカーの.pattファイルを読み込む -->
@@ -26,9 +27,7 @@
         <a-entity gltf-model="#cake"></a-entity>
 
         <!-- 音楽を流します -->
-        <audio src="./asset/HappyBirthday.wav" autoplay loop>
-          あなたのブラウザーは <code>audio</code>要素をサポートしていません。
-        </audio>
+        <a-entity sound="src: #happyBirthdayAudio; autoplay: true; loop: true;"></a-entity>
       </a-marker>
 
       <!-- カメラを追加 -->
