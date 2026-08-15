@@ -20,26 +20,22 @@
       canvas { 
         background: transparent; 
       }
-      #camera-overlay {
+      #music-button {
         position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0,0,0,0.35);
-        color: white;
-        font-size: 18px;
-        font-family: sans-serif;
-        z-index: 10;
-        opacity: 1;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-      }
-      #camera-overlay.hidden {
-        opacity: 0;
+        bottom: 24px;
+        right: 24px;
+        z-index: 20;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 999px;
+        background: #ffb703;
+        color: #111;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       }
     </style>
-    <div id="camera-overlay">カメラを許可してください</div>
+    <button id="music-button" type="button">音楽再生</button>
 	  
     <!-- A-FrameにAR.jsを紐づけ、VRボタン非表示、深度バッファ追加 -->
     <a-scene embedded arjs="backgroundColor: transparent;" loading-screen="enabled: false;" vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true; alpha: true;">
@@ -64,30 +60,16 @@
     </a-scene>
 
     <script>
-      const overlay = document.getElementById('camera-overlay');
+      const musicButton = document.getElementById('music-button');
+      const music = document.getElementById('happyBirthdayAudio');
 
-      function hideCameraOverlay() {
-        if (overlay) {
-          overlay.classList.add('hidden');
+      // 音楽再生ボタン
+      musicButton.addEventListener('click', () => {
+        if (music) {
+          music.play().catch(() => {
+            console.log('ユーザー操作後に再生されます');
+          });
         }
-      }
-
-      // カメラが使えるようになったらすぐオーバーレイを消す
-      navigator.mediaDevices?.getUserMedia?.({ video: true, audio: true })
-        .then(stream => {
-          hideCameraOverlay();
-          stream.getTracks().forEach(track => track.stop());
-        })
-        .catch(() => {
-          // カメラ許可待ちでもそのまま表示
-          setTimeout(() => {
-            hideCameraOverlay();
-          }, 1500);
-        });
-
-      // AR.js が開始したらオーバーレイを消す
-      window.addEventListener('arjs-video-loaded', () => {
-        hideCameraOverlay();
       });
     </script>
   </body>
