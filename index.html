@@ -46,7 +46,7 @@
       .confetti {
         position: fixed;
         pointer-events: none;
-        font-size: 20px;
+        font-size: 60px;
         z-index: 10;
       }
       @keyframes confetti-fall {
@@ -61,6 +61,15 @@
         50% { transform: translateY(50vh) rotateZ(180deg) translateX(-30px); }
         75% { transform: translateY(75vh) rotateZ(270deg) translateX(30px); }
         100% { transform: translateY(100vh) rotateZ(360deg) translateX(0); opacity: 0; }
+      }
+      /* ろうそくの炎のアニメーション */
+      @keyframes flame-flicker {
+        0% { --flicker: scaleY(1); }
+        20% { --flicker: scaleY(1.1); }
+        40% { --flicker: scaleY(0.95); }
+        60% { --flicker: scaleY(1.05); }
+        80% { --flicker: scaleY(0.98); }
+        100% { --flicker: scaleY(1); }
       }
     </style>
     <!-- 音楽再生ボタン -->
@@ -83,6 +92,25 @@
         <!-- 3Dモデルを設置 -->
         <a-entity gltf-model="#cake"></a-entity>
 
+        <!-- ろうそく: ケーキの上に配置 -->
+        <a-entity id="candles-group" position="0 0 0">
+          <!-- ろうそく1本目 -->
+          <a-entity id="candle1" position="-0.3 0.8 0">
+            <!-- ろうそくの本体（円柱） -->
+            <a-cylinder radius="0.04" height="0.3" color="#FFFACD" material="emissive: #FFFF99;"></a-cylinder>
+            <!-- 炎 -->
+            <a-cone id="flame1" radius-bottom="0.08" radius-top="0.02" height="0.25" color="#FF6347" material="emissive: #FF4500;" position="0 0.15 0" animation="property: scale; from: 1 0.9 1; to: 1 1.1 1; dir: alternate; dur: 800; loop: true;"></a-cone>
+          </a-entity>
+          
+          <!-- ろうそく2本目 -->
+          <a-entity id="candle2" position="0.3 0.8 0">
+            <!-- ろうそくの本体（円柱） -->
+            <a-cylinder radius="0.04" height="0.3" color="#FFFACD" material="emissive: #FFFF99;"></a-cylinder>
+            <!-- 炎 -->
+            <a-cone id="flame2" radius-bottom="0.08" radius-top="0.02" height="0.25" color="#FFD700" material="emissive: #FFA500;" position="0 0.15 0" animation="property: scale; from: 1 0.95 1; to: 1 1.05 1; dir: alternate; dur: 600; loop: true;"></a-cone>
+          </a-entity>
+        </a-entity>
+
         <!-- 音響テクニック: 音声を設置(自動再生は無効) -->
         <a-entity sound="src: #happyBirthdayAudio; autoplay: false; loop: true;"></a-entity>
       </a-marker>
@@ -98,8 +126,8 @@
         const confettiPieces = ['🎉', '🎊', '🎈', '✨', '⭐', '🌟', '💫'];
         const colors = ['#FFD700', '#FF69B4', '#00CED1', '#FF6347', '#32CD32', '#FF8C00', '#9370DB'];
         
-        // 30個の紙吹雪を生成
-        for (let i = 0; i < 30; i++) {
+        // 12個の紙吹雪を生成
+        for (let i = 0; i < 12; i++) {
           const confetti = document.createElement('div');
           confetti.classList.add('confetti');
           
