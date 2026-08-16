@@ -1,81 +1,105 @@
 <!DOCTYPE html>
 <html lang="ja">
+  <!-- ヘッダー: ARの基本設定 -->
   <head>
+    <!-- 文字コードをUTF-8に指定 -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- モバイル画面設定（ノッチ対応） -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <!-- A-Frame を読み込む -->
+    <!-- A-Frameを読み込み（ARの3D描画ライブラリ） -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <!-- AR.js を読み込む -->
+    <!-- AR.jsを読み込み（マーカー認識ARライブラリ） -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     
   </head>
+  <!-- ボディ: AR画面を表示 -->
   <body style="margin: 0; overflow: hidden; background: transparent;">
+    <!-- CSS: 画面を透明化、ボタンスタイル -->
     <style>
+      /* 画面全体を透明化（カメラ映像を背景に） */
       html, body { 
         background: transparent; 
         width: 100%; 
         height: 100%;
       }
+      /* Canvasを透明化 */
       canvas { 
         background: transparent; 
       }
+      /* 音楽再生ボタンのスタイル */
       #music-button {
-        position: fixed;
+        position: fixed;        /* 画面右下固定 */
         bottom: 24px;
         right: 24px;
-        z-index: 20;
+        z-index: 20;            /* AR描画の上に表示 */
         padding: 12px 20px;
         border: none;
-        border-radius: 999px;
-        background: #ffb703;
+        border-radius: 999px;   /* 丸いボタン */
+        background: #ffb703;    /* 黄色 */
         color: #111;
         font-size: 16px;
         font-weight: bold;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       }
     </style>
-    <button id="music-button" type="button">音楽再生</button>
-	  
-    <!-- A-FrameにAR.jsを紐づけ、VRボタン非表示、深度バッファ追加 -->
+    <!-- 音楽再生ボタン -->
+    <button id="music-button" type="button">音楽</button>
+    
+    <!-- A-Frameを使用してAR画面を出力 -->
+    <!-- embedded: ARを可能に, arjs: AR.js設定, vr-mode-ui: VRスクリーン非表示, renderer: 描画エンジン設定 -->
     <a-scene embedded arjs="backgroundColor: transparent;" loading-screen="enabled: false;" vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true; alpha: true;">
-	    
-      <!-- 3DCGモデルを読み込む -->
+      
+      <!-- アセット: 3Dモデルと音声を事前読み込み -->
       <a-assets>
+        <!-- 3DCGモデル(ケーキ) -->
         <a-asset-item id="cake" src="./asset/cake.glb"></a-asset-item>
+        <!-- 音声ファイル(ハッピーバースデー) -->
         <audio id="happyBirthdayAudio" src="./asset/HappyBirthday.wav"></audio>
       </a-assets>
 
-      <!-- マーカーの.pattファイルを読み込む -->
+      <!-- マーカー認識: ar.pattファイルを使用して、マーカーが認識されたら下記を表示 -->
       <a-marker type="pattern" url="./asset/ar.patt">
-        <!-- 3Dモデルを呼び出す -->
+        <!-- 3Dモデルを設置 -->
         <a-entity gltf-model="#cake"></a-entity>
 
-        <!-- 音楽はボタン押下時のみ再生 -->
+        <!-- 音響テクニック: 音声を設置(自動再生は無効) -->
         <a-entity sound="src: #happyBirthdayAudio; autoplay: false; loop: true;"></a-entity>
       </a-marker>
 
-      <!-- カメラを追加 -->
+      <!-- カメラ: ユーザーの視点を提供 -->
       <a-entity camera></a-entity>
     </a-scene>
 
+    <!-- スクリプト: 音楽再生ボタンの処理 -->
     <script>
+      // 音楽ボタンと音声要素を取得
       const musicButton = document.getElementById('music-button');
       const music = document.getElementById('happyBirthdayAudio');
 
+      // 初期状態では自動再生を止めて、再生位置を先頭に戻す
       if (music) {
         music.muted = false;
         music.pause();
         music.currentTime = 0;
       }
 
-      // 音楽再生ボタン
+      // ボタンクリック時に再生/停止を切り替える
+      // （ブラウザセキュリティにより、ユーザー操作後のみ音声再生が許可される）
       musicButton.addEventListener('click', () => {
         if (music) {
-          music.currentTime = 0;
-          music.play().catch(() => {
-            console.log('ユーザー操作後に再生されます');
-          });
+          if (music.paused) {
+            // 音楽が停止中 → 再生
+            music.currentTime = 0;
+            music.play().catch(() => {
+              console.log('ユーザー操作後に再生されます');
+            });
+            musicButton.textContent = '音楽停止';
+          } else {
+            // 音楽が再生中 → 停止
+            music.pause();
+            musicButton.textContent = '音楽再生';
+          }
         }
       });
     </script>
