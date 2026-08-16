@@ -114,8 +114,8 @@
           confetti.style.left = startLeft + '%';
           confetti.style.top = '-20px';
           
-          // ランダムなアニメーション時間（2-3秒）
-          const duration = 2 + Math.random() * 1;
+          // ランダムなアニメーション時間（4-6秒）
+          const duration = 10 + Math.random() * 2;
           confetti.style.animation = `confetti-swing ${duration}s linear forwards`;
           
           document.body.appendChild(confetti);
