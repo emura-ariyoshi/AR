@@ -42,6 +42,21 @@
         font-weight: bold;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       }
+      /* ろうそく消却ボタンのスタイル */
+      #candles-button {
+        position: fixed;        /* 画面右下固定（音楽ボタンより上） */
+        bottom: 80px;
+        right: 24px;
+        z-index: 20;            /* AR描画の上に表示 */
+        padding: 12px 20px;
+        border: none;
+        border-radius: 999px;   /* 丸いボタン */
+        background: #ff6b6b;    /* 赤 */
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
       /* クラッカー紙吹雪のスタイル */
       .confetti {
         position: fixed;
@@ -72,8 +87,9 @@
         100% { --flicker: scaleY(1); }
       }
     </style>
-    <!-- 音楽再生ボタン -->
-    <button id="music-button" type="button">ここを押してみてね！</button>
+    <!-- ボタングループ -->
+    <button id="music-button" type="button">🎵 音楽再生</button>
+    <button id="candles-button" type="button">🕯️ ろうそく消す</button>
     
     <!-- A-Frameを使用してAR画面を出力 -->
     <!-- embedded: ARを可能に, arjs: AR.js設定, vr-mode-ui: VRスクリーン非表示, renderer: 描画エンジン設定 -->
@@ -155,9 +171,12 @@
         }
       }
 
-      // 音楽ボタンと音声要素を取得
+      // 要素を取得
       const musicButton = document.getElementById('music-button');
+      const candlesButton = document.getElementById('candles-button');
       const music = document.getElementById('happyBirthdayAudio');
+      const candlesGroup = document.getElementById('candles-group');
+      let candlesVisible = true;
 
       // 初期状態では自動再生を止めて、再生位置を先頭に戻す
       if (music) {
@@ -166,8 +185,7 @@
         music.currentTime = 0;
       }
 
-      // ボタンクリック時に再生/停止を切り替える
-      // （ブラウザセキュリティにより、ユーザー操作後のみ音声再生が許可される）
+      // 音楽ボタンのクリック処理
       musicButton.addEventListener('click', () => {
         if (music) {
           if (music.paused) {
@@ -176,15 +194,24 @@
             music.play().catch(() => {
               console.log('ユーザー操作後に再生されます');
             });
-            musicButton.textContent = '音楽停止';
+            musicButton.textContent = '🎵 音楽停止';
             
             // クラッカー紙吹雪をトリガー
             createConfetti();
           } else {
             // 音楽が再生中 → 停止
             music.pause();
-            musicButton.textContent = '音楽再生';
+            musicButton.textContent = '🎵 音楽再生';
           }
+        }
+      });
+
+      // ろうそくボタンのクリック処理
+      candlesButton.addEventListener('click', () => {
+        if (candlesGroup) {
+          candlesVisible = !candlesVisible;
+          candlesGroup.setAttribute('visible', candlesVisible);
+          candlesButton.textContent = candlesVisible ? '🕯️ ろうそく消す' : '🕯️ ろうそく表示';
         }
       });
     </script>
