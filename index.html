@@ -158,7 +158,7 @@
           confetti.style.left = startLeft + '%';
           confetti.style.top = '-20px';
           
-          // ランダムなアニメーション時間（4-6秒）
+          // ランダムなアニメーション時間（10-12秒）
           const duration = 10 + Math.random() * 2;
           confetti.style.animation = `confetti-swing ${duration}s linear forwards`;
           
@@ -175,8 +175,9 @@
       const musicButton = document.getElementById('music-button');
       const candlesButton = document.getElementById('candles-button');
       const music = document.getElementById('happyBirthdayAudio');
-      const candlesGroup = document.getElementById('candles-group');
-      let candlesVisible = true;
+      const flame1 = document.getElementById('flame1');
+      const flame2 = document.getElementById('flame2');
+      let flamesVisible = true;
 
       // 初期状態では自動再生を止めて、再生位置を先頭に戻す
       if (music) {
@@ -206,13 +207,16 @@
         }
       });
 
-      // ろうそくボタンのクリック処理
+      // ろうそくボタンのクリック処理（炎のみを表示/非表示）
       candlesButton.addEventListener('click', () => {
-        if (candlesGroup) {
-          candlesVisible = !candlesVisible;
-          candlesGroup.setAttribute('visible', candlesVisible);
-          candlesButton.textContent = candlesVisible ? '🕯️ ろうそく消す' : '🕯️ ろうそく表示';
+        flamesVisible = !flamesVisible;
+        if (flame1) {
+          flame1.setAttribute('visible', flamesVisible);
         }
+        if (flame2) {
+          flame2.setAttribute('visible', flamesVisible);
+        }
+        candlesButton.textContent = flamesVisible ? '🕯️ 炎を消す' : '🕯️ 炎を点す';
       });
     </script>
   </body>
